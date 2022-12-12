@@ -18,4 +18,8 @@ router.get("/", (req, res) => {
     res.render("book-list")
 });
 
+router.get("/book-new", (req, res) => {
+    res.render("book-new")
+});
+
 module.exports = router;
