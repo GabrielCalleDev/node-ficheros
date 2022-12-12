@@ -1,0 +1,23 @@
+{
+  "name": "node-ficheros",
+  "version": "1.0.0",
+  "author": "Gabriel Calle",
+  "private": true,
+  "scripts": {
+    "start": "node ./app/app.js",
+    "dev": "nodemon ./app/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.inf-edt.org/a222603gc/node-ficheros.git"
+  },
+  "dependencies": {
+    "express": "~4.16.1",
+    "mongoose": "^5.13.15",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
