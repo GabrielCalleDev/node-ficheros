@@ -1,10 +1,9 @@
-"use strict"
-
 const express          = require("express"),
       router           = express.Router(),
       librosController = require("./../controllers/libros"),
       morgan           = require("morgan"),
-      multer           = require("multer")({ dest:'public/uploads' })
+      {uploadFile}     = require("./../controllers/libros")
+
 
 // Middleware para mostrar las peticiones de la app
 router.use(morgan("dev"))
@@ -22,5 +21,10 @@ router.get("/", (req, res) => {
 router.get("/book-new", (req, res) => {
     res.render("book-new")
 });
+
+router.post('/subir-un-libro', uploadFile().single('archivo'), function (req, res) {
+    librosController.subirLibroFs(req)
+    res.redirect('/')
+})
 
 module.exports = router;
