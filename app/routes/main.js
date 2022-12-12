@@ -3,7 +3,8 @@
 const express          = require("express"),
       router           = express.Router(),
       librosController = require("./../controllers/libros"),
-      morgan           = require("morgan")
+      morgan           = require("morgan"),
+      multer           = require("multer")({ dest:'public/uploads' })
 
 // Middleware para mostrar las peticiones de la app
 router.use(morgan("dev"))
