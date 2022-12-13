@@ -1,4 +1,5 @@
 const Libros = require("../models/libro")
+const fs     = require("fs")
 
 exports.getAll = async () => {
 	try {
@@ -32,7 +33,7 @@ exports.newBookDb = async (req) => {
 			})
 			await libro.save()
 			// Si guardamos en la base de datos, borramos el archivo del sistema de ficheros
-			fs.unlink(fileName, (err) => { if (err) console.error(err) })
+			fs.unlink(req.file.path, (err) => { if (err) console.error(err) })
 			return libro;
 		} catch (error) {
 			console.error(`Error creating "Book" ${error}`)

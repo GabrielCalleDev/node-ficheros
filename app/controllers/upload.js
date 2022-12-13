@@ -7,12 +7,12 @@ class UploadSingle{
     }
 
     buildUpload(inputFile, uploadFolder, fileMimeType) {
-        const uploadFilter = function (req, file, next) {
+        const uploadFilter = function (req, file, cb) {
             const isPdf = (file.mimetype == fileMimeType) ? true : false
             if (isPdf) 
-                next(null, true)
+                cb(null, true)
             else 
-                next(null, false)
+                cb(null, false)
         }
         const storage = multer.diskStorage({   
             destination: function(req, file, cb) { 
