@@ -1,7 +1,4 @@
-const Libros = require("../models/libro"),
-      fs     = require("fs"),
-      path   = require("path"),
-      multer = require("multer")
+const Libros = require("../models/libro")
 
 exports.getAll = async () => {
 	try {
@@ -26,14 +23,12 @@ exports.show = async (id) => {
 |-------------------------------------------------------------------------*/
 
 exports.newBookDb = async (req) => {
+	console.log(req.file)
 	if(req.file){
-		// Añadimos extensión pdf a nuestro archivo cambiando su nombre
-		const fileName = req.file.path + '.' + req.file.mimetype.split('/')[1]
-		fs.renameSync(req.file.path, fileName);
-
 		try {
 			const libro = new Libros({
-				file: fs.readFileSync(fileName)
+				file: req.file.path,
+				originalName: req.file.originalname
 			})
 			await libro.save()
 			// Si guardamos en la base de datos, borramos el archivo del sistema de ficheros
@@ -48,13 +43,10 @@ exports.newBookDb = async (req) => {
 }
 exports.newBookFs = async (req) => {
 	if(req.file){
-		// Añadimos extensión pdf a nuestro archivo cambiando su nombre
-		const fileName = req.file.path + '.' + req.file.mimetype.split('/')[1]
-		fs.renameSync(req.file.path, fileName);
-
 		try {
 			const libro = new Libros({
-				path: fileName
+				path: req.file.path,
+				originalName: req.file.originalname
 			})
 			await libro.save()
 			return libro;
@@ -62,22 +54,4 @@ exports.newBookFs = async (req) => {
 			console.error(`Error creating "Book" ${error}`)
 		}
 	}
-}
-
-/*-------------------------------------------------------------------------|
-|  Configuración de multer                                                 |
-|-------------------------------------------------------------------------*/
-exports.uploadFile = () => {
-	const uploadFolder = path.join(__dirname,"../public/uploads")
-	const uploadFilter = function (req, file, next) {
-		const isPdf = (file.mimetype == 'application/pdf') ? true : false;
-    	if (isPdf) 
-			next(null, true)
-		else 
-			next(null, false)
-	}
-	return multer({
-		dest      : uploadFolder,
-		fileFilter: uploadFilter
-	})
 }

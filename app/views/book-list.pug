@@ -13,11 +13,11 @@ block content
         th Fecha
       each libro in libros
         tr
+          td=libro.originalName
           td
           td
           td
-          td
-            a(href="/book/download/"+libro._id) Descargar
+            a(href="/books/download/"+libro._id) Descargar
           - let fecha = new Date(libro.createdAt)
           - let fechaFormateada = fecha.getDate()+"/"+ (fecha.getMonth()+1) +"/"+ fecha.getFullYear()
           td=fechaFormateada

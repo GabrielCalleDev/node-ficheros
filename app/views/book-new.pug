@@ -2,16 +2,15 @@ extends layout
 
 block content
   .container
-    h1 Lista de libros
-
+    h1 sistema de archivos
     form(action='/books/save-fs' method='post' enctype='multipart/form-data')
-      input(type='file' name='archivo' required accept="application/pdf")
-      br
-      input(type='submit' value="Enviar archivo Fs")
+      input.form-control(type='file' name='archivo' required accept="application/pdf")
+      input.btn.btn-primary(type='submit' value="Enviar archivo Fs")
 
     hr
 
+    h2 Base de datos
     form(action='/books/save-db' method='post' enctype='multipart/form-data')
-      input(type='file' name='archivo' required accept="application/pdf")
-      br
-      input(type='submit' value="Enviar archivo Db")
+      input.form-control(type='file' name='archivo' required accept="application/pdf")
+      input.btn.btn-primary(type='submit' value="Enviar archivo Db")
+
