@@ -3,3 +3,21 @@ extends layout
 block content
   .container
     h1 Lista de libros
+
+    table.table
+      tr
+        th Nombre
+        th Descripción
+        th Editorial 
+        th Archivo
+        th Fecha
+      each libro in libros
+        tr
+          td
+          td
+          td
+          td
+            a(href="/book/download/"+libro._id) Descargar
+          - let fecha = new Date(libro.createdAt)
+          - let fechaFormateada = fecha.getDate()+"/"+ (fecha.getMonth()+1) +"/"+ fecha.getFullYear()
+          td=fechaFormateada

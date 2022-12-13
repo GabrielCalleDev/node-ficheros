@@ -1,9 +1,7 @@
-"use strict"
-
-const Libros = require("../models/libro")
-const fs     = require('fs')
-const path   = require('path')
-const multer = require("multer")
+const Libros = require("../models/libro"),
+      fs     = require("fs"),
+      path   = require("path"),
+      multer = require("multer")
 
 exports.getAll = async () => {
 	try {
@@ -23,31 +21,63 @@ exports.show = async (id) => {
 	}
 }
 
-exports.subirLibroFs = (req) => {
-	if(req.file)
+/*-------------------------------------------------------------------------|
+|  Subida de archivos a la base de datos y al sistema de archivos          |
+|-------------------------------------------------------------------------*/
+
+exports.newBookDb = async (req) => {
+	if(req.file){
 		// Añadimos extensión pdf a nuestro archivo cambiando su nombre
-		fs.renameSync(req.file.path, req.file.path + '.' + req.file.mimetype.split('/')[1]);
-	else 
-		console.log("No se ha subido ningún fichero")
+		const fileName = req.file.path + '.' + req.file.mimetype.split('/')[1]
+		fs.renameSync(req.file.path, fileName);
+
+		try {
+			const libro = new Libros({
+				file: fs.readFileSync(fileName)
+			})
+			await libro.save()
+			// Si guardamos en la base de datos, borramos el archivo del sistema de ficheros
+			fs.unlink(fileName, (err) => { if (err) console.error(err) })
+			return libro;
+		} catch (error) {
+			console.error(`Error creating "Book" ${error}`)
+		}
+	}
+
+	
+}
+exports.newBookFs = async (req) => {
+	if(req.file){
+		// Añadimos extensión pdf a nuestro archivo cambiando su nombre
+		const fileName = req.file.path + '.' + req.file.mimetype.split('/')[1]
+		fs.renameSync(req.file.path, fileName);
+
+		try {
+			const libro = new Libros({
+				path: fileName
+			})
+			await libro.save()
+			return libro;
+		} catch (error) {
+			console.error(`Error creating "Book" ${error}`)
+		}
+	}
 }
 
-/*
-|--------------------------------------------------------------------------|
-|  configuración de multer                                                 |
-|--------------------------------------------------------------------------|
-*/
-
+/*-------------------------------------------------------------------------|
+|  Configuración de multer                                                 |
+|-------------------------------------------------------------------------*/
 exports.uploadFile = () => {
 	const uploadFolder = path.join(__dirname,"../public/uploads")
 	const uploadFilter = function (req, file, next) {
-		const isPdf = (file.mimetype == 'application/pdf')?true:false;
+		const isPdf = (file.mimetype == 'application/pdf') ? true : false;
     	if (isPdf) 
 			next(null, true)
 		else 
 			next(null, false)
 	}
 	return multer({
-		dest: uploadFolder,
+		dest      : uploadFolder,
 		fileFilter: uploadFilter
 	})
 }

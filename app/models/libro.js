@@ -1,13 +1,12 @@
-"use strict"
-
 const mongoose = require("mongoose"),
-    Schema   = mongoose.Schema
+      Schema   = mongoose.Schema
     
 const LibroSchema = new Schema({
-    nombre     : { type:String, required:true },
-    descripcion: { type:String, required:true },
-    editorial  : { type:String, required:true },
-    archivo    : { type:String, required:true }
+    nombre     : { type:String, required:false },
+    descripcion: { type:String, required:false },
+    editorial  : { type:String, required:false },
+    path       : { type:String, required:false },
+    file       : { type:Buffer, required:false }
 })
 
 LibroSchema.set('timestamps', true)

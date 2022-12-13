@@ -4,7 +4,14 @@ block content
   .container
     h1 Lista de libros
 
-    form(name='formulario-subida' action='subir-un-libro' method='post' enctype='multipart/form-data')
-        input(type='file' name='archivo')
-        hr
-        input(type='submit' value="Enviar archivo")
+    form(action='/books/save-fs' method='post' enctype='multipart/form-data')
+      input(type='file' name='archivo' required accept="application/pdf")
+      br
+      input(type='submit' value="Enviar archivo Fs")
+
+    hr
+
+    form(action='/books/save-db' method='post' enctype='multipart/form-data')
+      input(type='file' name='archivo' required accept="application/pdf")
+      br
+      input(type='submit' value="Enviar archivo Db")

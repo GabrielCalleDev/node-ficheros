@@ -1,5 +1,3 @@
-"use strict"
-
 const port    = 3000
 const express = require("express"),
   mongoose = require('mongoose'),
@@ -17,7 +15,7 @@ server.listen(port, (err, res) => {
 mongoose.connect(
   `mongodb://root:pass12345@mongodb:27017/ficheros?authSource=admin`,
   { useCreateIndex: true, useUnifiedTopology: true, useNewUrlParser: true },
-  (err, res) => {
+  (err) => {
     if (err) console.log(`ERROR: connecting to Database.  ${err}`)
     else console.log(`Database Online`)
   }
