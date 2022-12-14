@@ -33,16 +33,33 @@ router.get("/books/new", (req, res) => {
     res.render("book-new")
 });
 
-router.post('/books/save-fs', uploadPdfFile, async (req, res) => {
-    const libro = await librosController.newBookFs(req)
-    if(libro) res.redirect('/')
-    else res.render("error",{ mensaje:"No se ha subido ningún fichero" })
+router.post('/books/save-fs', (req, res) => {
+    uploadPdfFile(req, res, async (err) => {
+        if (err) {
+            res.render("error",{ mensaje: err.message })
+            return
+        }
+
+        if(!req.file){
+            res.render("error",{ mensaje: "No has seleccionado ningún fichero" })
+            return
+        }
+
+        await librosController.newBookFs(req)
+        res.redirect('/')
+    })
 })
 
 router.post('/books/save-db', uploadPdfFile, async (req, res) => {
-    const libro = await librosController.newBookDb(req)
-    if(libro) res.redirect('/')
-    else res.render("error",{ mensaje:"No se ha subido ningún fichero" })
+    try {
+        if(!req.file) res.render("error",{ mensaje:"No has seleccionado ningún fichero" })
+
+        await librosController.newBookDb(req)
+        res.redirect('/')
+        
+    } catch (error) {
+        res.render("error",{ mensaje: err })
+    }
 })
 
 router.get('/books/download/:id', (req, res) => {
