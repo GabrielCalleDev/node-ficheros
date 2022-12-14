@@ -1,5 +1,7 @@
 const Libros = require("../models/libro")
 const fs     = require("fs")
+const path   = require("path")
+const Upload = require("./upload")
 
 /*-------------------------------------------------------------------------|
 |  Configuración subir archivos                                            |
