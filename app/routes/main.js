@@ -16,9 +16,7 @@ router.get("/books/list", books.getAll);
 
 router.get("/books/new", books.newBook);
 
-router.post('/books/save-fs', books.uploadFileFS)
-
-router.post('/books/save-db', books.uploadFileDB)
+router.post('/books/save', books.uploadFile)
 
 router.get('/books/download/:id', books.downloadFile)
 

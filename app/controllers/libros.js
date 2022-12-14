@@ -38,32 +38,7 @@ exports.downloadFile = (req, res) => {
 const uploadFolder  = path.join(__dirname,"../public/uploads")
 const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, 'application/pdf')
 
-exports.uploadFileFS = (req, res) => {
-    uploadPdfFile(req, res, async (err) => {
-        if (err) {
-            res.render("error",{ mensaje: err.message })
-            return
-        }
-
-        if(!req.file){
-            res.render("error",{ mensaje: "No has seleccionado ningún fichero" })
-            return
-        }
-
-		try {
-			const libro = new Libros({
-				path: req.file.path,
-				originalName: req.file.originalname
-			})
-			await libro.save()
-		} catch (error) {
-			console.error(`Error creating "Book" ${error}`)
-		}
-		res.redirect('/')	
-    })
-}
-
-exports.uploadFileDB = (req, res) => {
+exports.uploadFile = (req, res) => {
     uploadPdfFile(req, res, async (err) => {
         if (err) {
             res.render("error",{ mensaje: err.message })
