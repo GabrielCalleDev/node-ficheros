@@ -9,12 +9,11 @@ class UploadSingle{
 
     buildUpload(inputFile, uploadFolder, fileMimeType) {
         const uploadFilter = function (req, file, callback) {
-            console.log(file)
-            const isPdf = (file.mimetype == fileMimeType) ? true : false
-            if (isPdf) 
+            const isAllowed = (file.mimetype == fileMimeType) ? true : false
+            if (isAllowed) 
                 callback(null, true)
             else{
-                callback(new Error('No es un archivo pdf'), false)
+                callback(new Error('No es un archivo: ' + fileMimeType), false)
             }
         }
         const storage = multer.diskStorage({   
@@ -26,16 +25,17 @@ class UploadSingle{
                 callback(null, md5(Date.now()) + '.' + extension);
             }
         })
+        const limits = {
+            fileSize : 2000000 // 2MB
+        }
         return multer({
             storage   : storage,
             fileFilter: uploadFilter,
-            limits: {
-                fileSize : 2000000 // 2MB
-            }
+            limits: limits
         }).single(inputFile)
     } 
 }
 module.exports = UploadSingle;
 
 //callback(null, false)
-//return callback(new Error('No es un archivo pdf'))
+//return callback(new Error('No es un archivo permitido'))
