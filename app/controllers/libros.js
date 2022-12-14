@@ -3,20 +3,17 @@ const fs     = require("fs")
 const path   = require("path")
 const Upload = require("./upload")
 
-/*-------------------------------------------------------------------------|
-|  Configuración subir archivos                                            |
-|-------------------------------------------------------------------------*/
-const uploadFolder  = path.join(__dirname,"../public/uploads")
-const uploadPdfFile = new Upload('archivo', uploadFolder, 'application/pdf')
-
-
-exports.getAll = async () => {
+exports.getAll = async (req, res) => {
 	try {
 		const libros = await Libros.find({})
-		return libros
+		res.render("book-list", { libros: libros })
 	} catch (error) {
 		console.error(`Error getting "Libros" ${error}`)
 	}
+}
+
+exports.newBook = (req, res) => {
+    res.render("book-new")
 }
 
 exports.show = async (id) => {
@@ -28,13 +25,20 @@ exports.show = async (id) => {
 	}
 }
 
+exports.downloadFile = (req, res) => {
+    console.log(req.params)
+    res.send(req.params)
+}
+
 /*-------------------------------------------------------------------------|
 |  Subida de archivos a la base de datos y al sistema de archivos          |
 |-------------------------------------------------------------------------*/
 
-exports.uploadFileFs = (req, res) => {
+const uploadFolder  = path.join(__dirname,"../public/uploads")
+const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, 'application/pdf')
+
+exports.uploadFileFS = (req, res) => {
     uploadPdfFile(req, res, async (err) => {
-		console.log(req.file)
         if (err) {
             res.render("error",{ mensaje: err.message })
             return
@@ -43,24 +47,33 @@ exports.uploadFileFs = (req, res) => {
         if(!req.file){
             res.render("error",{ mensaje: "No has seleccionado ningún fichero" })
             return
-        }else{
-			try {
-				const libro = new Libros({
-					path: req.file.path,
-					originalName: req.file.originalname
-				})
-				await libro.save()
-			} catch (error) {
-				console.error(`Error creating "Book" ${error}`)
-			}
+        }
+
+		try {
+			const libro = new Libros({
+				path: req.file.path,
+				originalName: req.file.originalname
+			})
+			await libro.save()
+		} catch (error) {
+			console.error(`Error creating "Book" ${error}`)
 		}
-        res.redirect('/')
+		res.redirect('/')	
     })
 }
 
-exports.newBookDb = async (req) => {
-	console.log(req.file)
-	if(req.file){
+exports.uploadFileDB = (req, res) => {
+    uploadPdfFile(req, res, async (err) => {
+        if (err) {
+            res.render("error",{ mensaje: err.message })
+            return
+        }
+
+        if(!req.file){
+            res.render("error",{ mensaje: "No has seleccionado ningún fichero" })
+            return
+        }
+		
 		try {
 			const libro = new Libros({
 				file: req.file.path,
@@ -69,9 +82,9 @@ exports.newBookDb = async (req) => {
 			await libro.save()
 			// Si guardamos en la base de datos, borramos el archivo del sistema de ficheros
 			fs.unlink(req.file.path, (err) => { if (err) console.error(err) })
-			return libro;
 		} catch (error) {
 			console.error(`Error creating "Book" ${error}`)
 		}
-	}
+		res.redirect('/')
+    })
 }

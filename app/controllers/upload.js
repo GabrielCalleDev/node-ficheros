@@ -35,7 +35,5 @@ class UploadSingle{
         }).single(inputFile)
     } 
 }
-module.exports = UploadSingle;
 
-//callback(null, false)
-//return callback(new Error('No es un archivo permitido'))
+module.exports = UploadSingle;
