@@ -30,6 +30,7 @@ exports.downloadFile = (req, res) => {
     res.send(req.params)
 }
 
+
 /*-------------------------------------------------------------------------|
 |  Subida de archivos a la base de datos y al sistema de archivos          |
 |-------------------------------------------------------------------------*/
@@ -75,8 +76,11 @@ exports.uploadFileDB = (req, res) => {
         }
 		
 		try {
+			var img = fs.readFileSync(req.file.path);
+			var encoded_image = img.toString('base64');
+
 			const libro = new Libros({
-				file: req.file.path,
+				file: Buffer.from(encoded_image, 'base64'),
 				originalName: req.file.originalname
 			})
 			await libro.save()
