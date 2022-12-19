@@ -32,7 +32,7 @@ class UploadSingle{
         return multer({
             storage   : storage,
             fileFilter: uploadFilter,
-            limits: limits
+            limits    : limits
         }).single(inputFile)
     } 
 }
