@@ -16,8 +16,8 @@ router.get("/books/list", books.getAll);
 
 router.get("/books/new", books.newBook);
 
-router.post('/books/save', books.uploadFile)
-
 router.get('/books/download/:id', books.downloadFile)
+
+router.post('/books/save', books.uploadFile)
 
 module.exports = router

@@ -16,27 +16,39 @@ exports.newBook = (req, res) => {
     res.render("book-new")
 }
 
-exports.show = async (id) => {
+exports.downloadFile = async (req, res) => {
 	try {
-		const libro = await Libros.findOne({id:id})
-		return libro
-	} catch (error) {
-		console.error(`Error getting "libro" ${error}`)
-	}
-}
+		const libro = await Libros.findOne({_id:req.params.id})
+		console.log(libro)
 
-exports.downloadFile = (req, res) => {
-    console.log(req.params)
-    res.send(req.params)
+		let buffer_pdf = Buffer.from(libro.file);
+    	fs.writeFile(libro.originalName,buffer_pdf);
+
+		res.download(libro.originalName, (err) => {
+			if (err) {
+				console.log(err)
+			} else {
+			  // If download is complete
+			  if (res.headersSent) {
+				// if you want to delete the file which was created locally after download is complete
+				fs.rm(libro.originalName);
+			  }
+			}
+		  });
+
+		//res.download(libro.file)
+	} catch (error) {
+		console.error(`Error getting "Libro" ${error}`)
+	}
 }
 
 
 /*-------------------------------------------------------------------------|
-|  Subida de archivos a la base de datos y al sistema de archivos          |
+|  Subida de archivos a la base de datos                                   |
 |-------------------------------------------------------------------------*/
-
 const uploadFolder  = path.join(__dirname,"../public/uploads")
-const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, 'application/pdf')
+const fileType      = 'application/pdf'
+const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, fileType)
 
 exports.uploadFile = (req, res) => {
     uploadPdfFile(req, res, async (err) => {
@@ -51,14 +63,15 @@ exports.uploadFile = (req, res) => {
         }
 		
 		try {
-			var img = fs.readFileSync(req.file.path);
-			var encoded_image = img.toString('base64');
-
 			const libro = new Libros({
-				file: Buffer.from(encoded_image, 'base64'),
-				originalName: req.file.originalname
+				nombre      : req.body.nombre,
+				descripcion : req.body.descripcion,
+				editorial   : req.body.editorial,
+				originalName: req.file.originalname,
+				file        : Buffer.from(fs.readFileSync(req.file.path), 'base64')
 			})
 			await libro.save()
+
 			// Si guardamos en la base de datos, borramos el archivo del sistema de ficheros
 			fs.unlink(req.file.path, (err) => { if (err) console.error(err) })
 		} catch (error) {

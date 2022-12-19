@@ -9,15 +9,17 @@ block content
         th Nombre
         th Descripción
         th Editorial 
-        th Archivo
         th Fecha
+        th Descargar archivo
       each libro in libros
         tr
-          td=libro.originalName
-          td
-          td
-          td
-            a(href="/books/download/"+libro._id) Descargar
+          td=libro.nombre
+          td=libro.descripcion
+          td=libro.editorial
           - let fecha = new Date(libro.createdAt)
           - let fechaFormateada = fecha.getDate()+"/"+ (fecha.getMonth()+1) +"/"+ fecha.getFullYear()
           td=fechaFormateada
+          td
+            a(href="/books/download/"+libro._id)
+              button.btn.btn-outline-success.btn-sm.me-2(type="button")=libro.originalName
+

@@ -2,15 +2,15 @@ extends layout
 
 block content
   .container
-    h1 sistema de archivos
-    form(action='/books/save-fs' method='post' enctype='multipart/form-data')
-      input.form-control(type='file' name='inputFilePdf' required accept="application/pdf")
-      input.btn.btn-primary(type='submit' value="Enviar archivo Fs")
-
-    hr
-
-    h2 Base de datos
-    form(action='/books/save-db' method='post' enctype='multipart/form-data')
-      input.form-control(type='file' name='inputFilePdf' required accept="application/pdf")
-      input.btn.btn-primary(type='submit' value="Enviar archivo Db")
+    h1 Introduce un libro
+    form(action='/books/save' method='post' enctype='multipart/form-data')
+      label.form-label(for='nombre') Nombre libro
+      input#nombre.form-control(type='text' name="nombre")
+      label.form-label(for='descripcion') Descripcion
+      input#descripcion.form-control(type='text' name="descripcion")
+      label.form-label(for='editorial') Editorial
+      input#editorial.form-control(type='text' name="editorial")
+      label.form-label(for='archivo') Archivo a subir
+      input#archivo.form-control(type='file' name='inputFilePdf' required accept="application/pdf")
+      input.mt-3.btn.btn-primary(type='submit' value="Subir libro")
 
