@@ -36,8 +36,7 @@ exports.deleteFile = async (req, res) => {
 |  Subida de archivos a la base de datos                                   |
 |-------------------------------------------------------------------------*/
 const uploadFolder  = path.join(__dirname,"../public/uploads")
-const fileType      = 'application/pdf'
-const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, fileType)
+const uploadPdfFile = new Upload('inputFilePdf', uploadFolder, 'pdf')
 
 exports.uploadFile = (req, res) => {
     uploadPdfFile(req, res, async (err) => {

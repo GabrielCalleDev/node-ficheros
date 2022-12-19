@@ -1,20 +1,21 @@
 multer = require("multer")
 md5    = require("md5")
+path   = require("path")
 
 class UploadSingle{
     
-    constructor(inputFile, uploadFolder, fileMimeType){
-        return this.buildUpload(inputFile, uploadFolder, fileMimeType)
+    constructor(inputFile, uploadFolder, fileType){
+        return this.buildUpload(inputFile, uploadFolder, fileType)
     }
 
-    buildUpload(inputFile, uploadFolder, fileMimeType) {
+    buildUpload(inputFile, uploadFolder, fileType) {
         const uploadFilter = function (req, file, callback) {
-            const isAllowed = (file.mimetype == fileMimeType) ? true : false
-            if (isAllowed) 
-                callback(null, true)
-            else{
-                callback(new Error('No es un archivo: ' + fileMimeType), false)
-            }
+            const filetypes = new RegExp(fileType);
+            const extname   = filetypes.test(path.extname(file.originalname).toLowerCase());
+            const mimetype  = filetypes.test(file.mimetype);
+          
+            if (mimetype && extname) callback(null, true)
+            else callback(new Error('No es un archivo: ' + fileType), false)
         }
         const storage = multer.diskStorage({   
             destination: function(req, file, callback) { 
