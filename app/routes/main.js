@@ -3,7 +3,7 @@ const express = require("express"),
     books     = require("./../controllers/libros"),
     morgan    = require("morgan")
 
-// Middleware para mostrar las peticiones de la app
+// Middleware para mostrar las peticiones de las rutas de este archivo
 router.use(morgan("dev"))
 
 /*-------------------------------------------------------------------------|
@@ -12,11 +12,13 @@ router.use(morgan("dev"))
 
 router.get("/", (req, res) => { res.redirect("/books/list") });
 
+router.get("/books/new", (req, res) => { res.render("book-new")});
+
 router.get("/books/list", books.getAll);
 
-router.get("/books/new", books.newBook);
-
 router.get('/books/download/:id', books.downloadFile)
+
+router.get('/books/delete/:id', books.deleteFile)
 
 router.post('/books/save', books.uploadFile)
 

@@ -12,36 +12,25 @@ exports.getAll = async (req, res) => {
 	}
 }
 
-exports.newBook = (req, res) => {
-    res.render("book-new")
-}
-
 exports.downloadFile = async (req, res) => {
 	try {
-		const libro = await Libros.findOne({_id:req.params.id})
-		console.log(libro)
-
-		let buffer_pdf = Buffer.from(libro.file);
-    	fs.writeFile(libro.originalName,buffer_pdf);
-
-		res.download(libro.originalName, (err) => {
-			if (err) {
-				console.log(err)
-			} else {
-			  // If download is complete
-			  if (res.headersSent) {
-				// if you want to delete the file which was created locally after download is complete
-				fs.rm(libro.originalName);
-			  }
-			}
-		  });
-
-		//res.download(libro.file)
+		const libro = await Libros.findOne({ _id:req.params.id })
+		res.setHeader('Content-Disposition', 'attachment; filename=' + libro.originalName); // Para descargar el archivo
+		//res.contentType('application/pdf'); // Para verlo en pantalla sin descargar
+		res.send(libro.file)
 	} catch (error) {
 		console.error(`Error getting "Libro" ${error}`)
 	}
 }
 
+exports.deleteFile = async (req, res) => {
+	try {
+		await Libros.deleteOne({_id: req.params.id})
+		res.redirect('/')
+	} catch (error) {
+		console.error(`Error deleting "Libro" ${error}`)
+	}
+}
 
 /*-------------------------------------------------------------------------|
 |  Subida de archivos a la base de datos                                   |
@@ -68,7 +57,7 @@ exports.uploadFile = (req, res) => {
 				descripcion : req.body.descripcion,
 				editorial   : req.body.editorial,
 				originalName: req.file.originalname,
-				file        : Buffer.from(fs.readFileSync(req.file.path), 'base64')
+				file        : Buffer.from(fs.readFileSync(req.file.path).toString('base64'), 'base64')
 			})
 			await libro.save()
 

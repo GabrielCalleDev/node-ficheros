@@ -33,4 +33,9 @@ const routes = require("./routes/main")
 // mount the routes on the app
 app.use("/", routes)
 
+// Page not found
+app.use((req, res) => {
+  res.status(404).render("404")
+})
+
 module.exports = app

@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  .container
+  .p-3.p-md-5
     h1 Lista de libros
 
     table.table
@@ -11,6 +11,7 @@ block content
         th Editorial 
         th Fecha
         th Descargar archivo
+        th Borrar
       each libro in libros
         tr
           td=libro.nombre
@@ -22,4 +23,6 @@ block content
           td
             a(href="/books/download/"+libro._id)
               button.btn.btn-outline-success.btn-sm.me-2(type="button")=libro.originalName
-
+          td
+            a(href="/books/delete/"+libro._id)
+              button.btn.btn-outline-danger.btn-sm.me-2(type="button") Eliminar
